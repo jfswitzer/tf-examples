@@ -31,11 +31,16 @@ class BertQaHelper(
     var currentDelegate: Int = 0,
     val answererListener: AnswererListener?
 ) {
-
+    private var useRAIS: Boolean = true //make this a toggle button
     private var bertQuestionAnswerer: BertQuestionAnswerer? = null
-
+    private var raisQaHelper: RaisQaHelper? = null
     init {
-        setupBertQuestionAnswerer()
+        Log.d("INIT","INITIALIZING NOW")
+        if (useRAIS) {
+            raisQaHelper = RaisQaHelper("172.20.10.14")
+        } else {
+            setupBertQuestionAnswerer()
+        }
     }
 
     fun clearBertQuestionAnswerer() {
@@ -84,7 +89,14 @@ class BertQaHelper(
         // process
         var inferenceTime = SystemClock.uptimeMillis()
 
-        val answers = bertQuestionAnswerer?.answer(contextOfQuestion, question)
+        var answers: List<QaAnswer>? = null
+        if (useRAIS && raisQaHelper != null) {
+            //todo make switch, return result
+            var result = raisQaHelper!!.run(contextOfQuestion, question)
+            answers = listOf(result)
+        } else {
+            answers = bertQuestionAnswerer?.answer(contextOfQuestion, question)
+        }
         inferenceTime = SystemClock.uptimeMillis() - inferenceTime
         answererListener?.onResults(answers, inferenceTime)
     }
