@@ -16,6 +16,8 @@
 package org.tensorflow.lite.examples.bertqa
 
 import android.os.Bundle
+import android.widget.Switch
+import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -41,6 +43,8 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -48,4 +52,5 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
+
 }

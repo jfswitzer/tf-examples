@@ -84,7 +84,8 @@ import org.tensorflow.lite.task.text.qa.QaAnswer;
     URL url;
     {
         try {
-            url = new URL(String.format("http://%s:5000/jobsubmit/","172.20.10.14"));
+            //todo --- propagate var through
+            url = new URL(String.format("http://%s:5000/jobsubmit/","192.168.1.64"));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -110,6 +111,7 @@ import org.tensorflow.lite.task.text.qa.QaAnswer;
             client.setDoOutput(true);
         }
         public QaAnswer send_request(String... strings) {
+            Log.d("sending request","RAIS REQUEST");
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
             try {
@@ -130,6 +132,7 @@ import org.tensorflow.lite.task.text.qa.QaAnswer;
                     int start = result.getInt("start");
                     int end = result.getInt("end");
                     float logit = result.getLong("logit");
+                    Log.d("LALETENCY:",result.getString("latency"));
                     QaAnswer rais_answer = new QaAnswer(answer,start,end,logit);
                     return rais_answer;
                 }

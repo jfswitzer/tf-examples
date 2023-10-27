@@ -14,7 +14,6 @@ import java.net.URL
 
 class RaisQaHelper(endpoint: String) {
     var endpoint: String
-
     init {
         this.endpoint = endpoint
     }

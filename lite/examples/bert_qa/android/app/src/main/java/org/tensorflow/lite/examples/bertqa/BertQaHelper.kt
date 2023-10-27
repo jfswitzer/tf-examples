@@ -15,15 +15,20 @@
  */
 package org.tensorflow.lite.examples.bertqa
 
+import android.R
+import android.app.Activity
 import android.content.Context
 import android.os.SystemClock
 import android.util.Log
+import android.view.View
+import android.widget.Switch
+import android.widget.TextView
 import org.tensorflow.lite.gpu.CompatibilityList
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.text.qa.BertQuestionAnswerer
 import org.tensorflow.lite.task.text.qa.BertQuestionAnswerer.BertQuestionAnswererOptions
 import org.tensorflow.lite.task.text.qa.QaAnswer
-import java.lang.IllegalStateException
+
 
 class BertQaHelper(
     val context: Context,
@@ -31,13 +36,14 @@ class BertQaHelper(
     var currentDelegate: Int = 0,
     val answererListener: AnswererListener?
 ) {
-    private var useRAIS: Boolean = true //make this a toggle button
+    private var useRais: Boolean = false //make this a toggle button
     private var bertQuestionAnswerer: BertQuestionAnswerer? = null
     private var raisQaHelper: RaisQaHelper? = null
     init {
-        Log.d("INIT","INITIALIZING NOW")
-        if (useRAIS) {
-            raisQaHelper = RaisQaHelper("172.20.10.14")
+        val toggle = (context as Activity).findViewById<View>(org.tensorflow.lite.examples.bertqa.R.id.switch1) as Switch
+        useRais = toggle.isChecked
+        if (useRais) {
+            raisQaHelper = RaisQaHelper("192.168.1.64")
         } else {
             setupBertQuestionAnswerer()
         }
@@ -49,7 +55,6 @@ class BertQaHelper(
 
     private fun setupBertQuestionAnswerer() {
         val baseOptionsBuilder = BaseOptions.builder().setNumThreads(numThreads)
-
         when (currentDelegate) {
             DELEGATE_CPU -> {
                 // Default
@@ -65,11 +70,9 @@ class BertQaHelper(
                 baseOptionsBuilder.useNnapi()
             }
         }
-
         val options = BertQuestionAnswererOptions.builder()
             .setBaseOptions(baseOptionsBuilder.build())
             .build()
-
         try {
             bertQuestionAnswerer =
                 BertQuestionAnswerer.createFromFileAndOptions(context, BERT_QA_MODEL, options)
@@ -81,16 +84,12 @@ class BertQaHelper(
     }
 
     fun answer(contextOfQuestion: String, question: String) {
-        if (bertQuestionAnswerer == null) {
+        var inferenceTime = SystemClock.uptimeMillis()
+        if (!useRais && bertQuestionAnswerer == null) {
             setupBertQuestionAnswerer()
         }
-
-        // Inference time is the difference between the system time at the start and finish of the
-        // process
-        var inferenceTime = SystemClock.uptimeMillis()
-
         var answers: List<QaAnswer>? = null
-        if (useRAIS && raisQaHelper != null) {
+        if (useRais && raisQaHelper != null) {
             //todo make switch, return result
             var result = raisQaHelper!!.run(contextOfQuestion, question)
             answers = listOf(result)

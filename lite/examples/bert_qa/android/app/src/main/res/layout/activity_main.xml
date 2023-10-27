@@ -43,6 +43,15 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/toolbar" />
 
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@color/toolbar_background"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            android:text="Use RAIS?"
+            android:textSize="20dp" />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container"
             android:name="androidx.navigation.fragment.NavHostFragment"
@@ -52,7 +61,7 @@
             android:keepScreenOn="true"
             app:defaultNavHost="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintTop_toBottomOf="@id/switch1"
             app:navGraph="@navigation/nav_graph"
             tools:context=".MainActivity" />
 
